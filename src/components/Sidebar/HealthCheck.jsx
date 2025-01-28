@@ -4,7 +4,7 @@ import RadialBarChartComponent from "./RadialBarChartComponent";
 
 function HealthCheck() {
   const [connectionStatus, setConnectionStatus] = useState("Connecting...");
-  const [npkData, setNpkData] = useState([40, 30, 30]); // Initialize with dummy NPK values
+  const [npkData, setNpkData] = useState([40, 30, 30, 15]); // Initialize with dummy NPK values
   const [showChart, setShowChart] = useState(false); // State to toggle between map and chart
 
   useEffect(() => {
@@ -29,8 +29,8 @@ function HealthCheck() {
         console.log("Parsed NPK Data:", parsedData);
 
         // Assuming the JSON format is { "nitrogen": number, "phosphorus": number, "potassium": number }
-        const { nitrogen, phosphorus, potassium } = parsedData;
-        setNpkData([nitrogen, phosphorus, potassium]);  // Set NPK data state
+        const { nitrogen, phosphorus, potassium, ph } = parsedData;
+        setNpkData([nitrogen, phosphorus, potassium, ph]);  // Set NPK data state
       } catch (error) {
         console.error("Error parsing WebSocket data:", error);
         setConnectionStatus("Error - Invalid data format");

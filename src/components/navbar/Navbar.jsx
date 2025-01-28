@@ -5,9 +5,11 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import logo2 from '../../assests/man_15240616.png';
 import background1 from '../../assests/green-tea-bud-leaves-green-tea-plantations-morning.jpg';
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const { user } = useSelector((state) => state.auth);
 
     return (
         <nav className="relative w-full h-30 bg-cover bg-center shadow-lg z-10"
@@ -19,8 +21,8 @@ const Navbar = () => {
             <div className="relative container mx-auto px-4 md:px-8 flex justify-between items-center py-4 z-10">
                 {/* Logo */}
                 <div className="flex items-center space-x-2">
-                    <img src={logo2} alt="Logo" className="h-10 w-10 object-contain" />
-                    <span className="text-white font-semibold text-3xl" style={{ fontFamily: "'Poppins', sans-serif" }}>FarmEase</span>
+                    <img src={logo2} alt="Logo" className="h-10 w-24 object-contain" />
+                    <span className="text-white font-semibold text-3xl" style={{ fontFamily: "'Poppins', sans-serif" }}></span>
                 </div>
 
                 {/* Desktop Menu */}
@@ -33,7 +35,9 @@ const Navbar = () => {
 
                 {/* Profile Avatar */}
                 <div className="hidden md:block">
-                    <Avatar src="/path/to/your/avatar.jpg" alt="Profile" />
+                    <Avatar src="/path/to/your/avatar.jpg" alt="Profile">
+                    {user?.firstName[0].toUpperCase()}
+                    </Avatar>
                 </div>
 
                 {/* Mobile Menu Icon */}

@@ -3,10 +3,12 @@ import { Avatar } from "@mui/material";
 import { Home, Map, Agriculture, Info, Person } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import { useSelector } from "react-redux";
 
 const Sidebar = ({ onSidebarClick }) => {
     const [isOpen, setIsOpen] = useState(true);
     const [selected, setSelected] = useState('npkMap'); // Track the selected component
+    const { user } = useSelector((state) => state.auth);
 
     // Handle component rendering and path switching
     const handleNavigation = (component) => {
@@ -52,7 +54,7 @@ const Sidebar = ({ onSidebarClick }) => {
                         alt="Profile"
                         sx={{ width: 60, height: 60 }}
                         className="mb-4"
-                    />
+                    >{user?.firstName[0].toUpperCase()}</Avatar>
                     <h2 className="text-white font-semibold text-xl">Farmer Dashboard</h2>
                 </div>
             )}
@@ -75,13 +77,13 @@ const Sidebar = ({ onSidebarClick }) => {
                         {isOpen && <span className="text-lg">Get Crop Recommendation</span>}
                     </li>
 
-                    <li
+                    {/* <li
                         className={`flex items-center space-x-3 text-white border-b border-gray-600 p-2 cursor-pointer ${liClasses('npkMap1')}`}
                         onClick={() => handleNavigation('npkMap1')}
                     >
                         <Map fontSize="large" />
                         {isOpen && <span className="text-lg">NPK Map</span>}
-                    </li>
+                    </li> */}
 
                     <li
                         className={`flex items-center space-x-3 text-white border-b border-gray-600 p-2 cursor-pointer ${liClasses('aboutProject')}`}

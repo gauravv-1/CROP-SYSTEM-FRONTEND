@@ -3,7 +3,7 @@ import Navbar from '../navbar/Navbar';
 import Sidebar from '../Sidebar/Sidebar';
 import RegionwiseNPKForm from '../Recommendation/RegionwiseNPKForm';
 import Recommendation from '../Recommendation/Recommendation';
-import NPKMap from '../Sidebar/HealthCheck';
+
 import AboutPage from '../../pages/AboutPage';
 import UserProfile from '../Sidebar/UserProfile';
 import HealthCheck from '../Sidebar/HealthCheck';
