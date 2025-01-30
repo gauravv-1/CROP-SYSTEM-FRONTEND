@@ -1,19 +1,74 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import SoilHealthComponent from "./SoilHealthComponent";
 
 function RadialBarChartComponent({ npkData, onStop }) {
+  const [recommendation, setRecommendation] = useState(null);//newPart
   const [soilHealthData, setSoilHealthData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const [location, setLocation] = useState(null);
+  // const [error, setError] = useState(null); 
+
+  useEffect(() => {
+    const getLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setLocation({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            });
+
+            console.log("Location: ",location);
+          },
+          (error) => {
+            setError(error.message);
+          }
+        );
+      } else {
+        setError("Geolocation is not supported by your browser.");
+      }
+    };
+
+    getLocation(); // Call the function to get the location
+  }, []);
+
   // Default NPK values
   const defaultNPKValues = [40, 30, 30,15];
+  const defaultAllDataUpdatedPart = [40,50,50,40.0,20,100,100];
   const [nitrogen = defaultNPKValues[0], phosphorus = defaultNPKValues[1], potassium = defaultNPKValues[2], ph=defaultNPKValues[3]] = npkData || defaultNPKValues;
 
   const getValidValue = (value) => Math.min(100, Math.max(0, value));
+  
+  // ---------------------------------************-----------------------------------
+  const sendDataToAPI = async (sensorData) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.post("http://localhost:5000/predict", {
+        Nitrogen: defaultAllDataUpdatedPart[0],
+        Phosphorus: defaultAllDataUpdatedPart[1],
+        Potassium: defaultAllDataUpdatedPart[2],
+        Temperature: defaultAllDataUpdatedPart[3],
+        Humidity: defaultAllDataUpdatedPart[4],
+        Ph: defaultAllDataUpdatedPart[5],
+        Rainfall: defaultAllDataUpdatedPart[6],
+      });
+
+      setRecommendation(response.data);
+    } catch (err) {
+      setError("Failed to get recommendation. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ---------------------------*************************---------------------------------
 
   const handleCheckHealth = async () => {
     setLoading(true);
@@ -35,6 +90,14 @@ function RadialBarChartComponent({ npkData, onStop }) {
       setLoading(false);
     }
   };
+
+  if (location) {
+    return (
+      <div>
+        Latitude: {location.latitude}, Longitude: {location.longitude}
+      </div>
+    );
+  }
 
   if (soilHealthData) {
     return (
@@ -109,7 +172,8 @@ function RadialBarChartComponent({ npkData, onStop }) {
       </div>
 
       <button
-        onClick={handleCheckHealth}
+        // onClick={handleCheckHealth}
+        onClick={sendDataToAPI}
         disabled={loading}
         className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
       >
@@ -123,6 +187,19 @@ function RadialBarChartComponent({ npkData, onStop }) {
       >
         Stop
       </button>
+      {/* new Part */}
+      <div className="text-center">
+      <h2>Crop Recommendation</h2>
+
+      {loading && <p>Loading...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+      {recommendation && (
+        <div className="p-4 border rounded shadow-md">
+          <h3>Recommended Crop: {recommendation.crop}</h3>
+          <p>{recommendation.message}</p>
+        </div>
+      )}
+    </div>
     </div>
   );
 }
